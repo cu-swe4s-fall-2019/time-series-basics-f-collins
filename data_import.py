@@ -11,6 +11,14 @@ class ImportData:
         # open file, create a reader from csv.DictReader, and read input times and values
         self._time = []
         self._value = []
+        self._roundtime = []
+        self._roundvalue = []
+        
+        if data_csv.split('_') == "activity" or data_csv.split('_') == "bolus" or data_csv.split('_') == "meal":
+            self.sumvals = 1
+        else:
+            self.sumvals = 0
+
 
         with open(data_csv, "r") as data_file:
             reader = csv.DictReader(data_file)
@@ -31,9 +39,9 @@ class ImportData:
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
         out = []
-        for i in range(len(self._time)):
-            if self._time[i] == key_time:
-                out.append(self._value[i])
+        for i in range(len(self._roundtime)):
+            if self._roundtime[i] == key_time:
+                out.append(self._roundvalue[i])
         
         if len(out) == 0:
             return -1;
@@ -52,10 +60,36 @@ def roundTimeArray(obj, res):
     # with the times rounded to the nearest rounding resolution (res)
     # ensure no duplicated times
     # handle duplicated values for a single timestamp based on instructions in
-    # the assignment
+    # the assignmenj
     # return: iterable zip object of the two lists
     # note: you can create additional variables to help with this task
     # which are not returned
+    timedict = {}
+    for (times, values) in zip(obj._time, obj._value):
+        dtime = datetime.timedelta(minutes = (times.minute % res))
+        resmin = datetime.timedelta(minutes = res)
+        if (times.minute % res) <= res / 2:
+            obj._roundtime.append(times - dtime)
+        else:
+            obj._roundtime.append(times + resmin - dtime)
+        obj._roundvalue.append(int(values))
+
+    for (times, values) in zip(obj._roundtime, obj._roundvalue):
+        currenttime = times.strftime("%m/%d/%Y %H:%M")
+        if not currenttime in timedict:
+            timedict[currenttime] = obj.linear_search_value(times)
+
+    _newtimes = []
+    _newvalues = []
+    for key in timedict:
+        _newtimes.append(key)
+        if obj.sumvals == 1:
+            _newvalues.append(sum(timedict[key]))
+        else:
+            _newvalues.append(sum(timedict[key])/len(timedict[key]))
+
+    return zip(_newtimes, _newvalues)
+        
 
 
 def printArray(data_list, annotation_list, base_name, key_file):
