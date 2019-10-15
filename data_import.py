@@ -15,7 +15,14 @@ class ImportData:
             reader = csv.DictReader(data_file)
             for row in reader:
                 self._time.append(dateutil.parser.parse(row["time"]))
-                self._value.append(row["value"])
+                if row["value"] == "low":
+                    self._value.append(40)
+                    print("Replacing low with 40.")
+                elif row["value"] == "high":
+                    self._value.append(300)
+                    print("Replacing high with 300.")
+                else:
+                    self._value.append(row["value"])
             data_file.close()
 
 
