@@ -8,6 +8,7 @@ import datetime
 
 class ImportData:
     def __init__(self, data_csv):
+        # open file, create a reader from csv.DictReader, and read input times and values
         self._time = []
         self._value = []
 
@@ -26,12 +27,17 @@ class ImportData:
             data_file.close()
 
 
-        # open file, create a reader from csv.DictReader, and read input times and values
-
     def linear_search_value(self, key_time):
-        pass
         # return list of value(s) associated with key_time
         # if none, return -1 and error message
+        out = []
+        for i in range(len(self._time)):
+            if self._time[i] == key_time:
+                out.append(self._value[i])
+        
+        if len(out) == 0:
+            return -1;
+        return out
 
     def binary_search_value(self,key_time):
         pass
@@ -40,7 +46,6 @@ class ImportData:
         # if none, return -1 and error message
 
 def roundTimeArray(obj, res):
-    pass
     # Inputs: obj (ImportData Object) and res (rounding resoultion)
     # objective:
     # create a list of datetime entries and associated values
