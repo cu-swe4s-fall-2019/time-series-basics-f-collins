@@ -15,15 +15,17 @@ class TestImportData(unittest.TestCase):
             idate = datetime.datetime.now()
             for item in range(9):
                 idatestr = idate.strftime("%m/%d/%Y %H:%M")
-                randval = random.randint(0, 10000)
+                randval = str(random.randint(0, 10000))
                 data_writer.writerow([idatestr, randval])
                 data_times.append(idatestr)
                 data_values.append(randval)
                 idate = idate + datetime.timedelta(hours=1)
+            test_data.close()
         
         testdata = ImportData("test_file.csv")
         os.remove("test_file.csv")
-        self.assertEqual(testdata._time, data_times)
+        str_times = [val.strftime("%m/%d/%Y %H:%M") for val in testdata._time]
+        self.assertEqual(str_times, data_times)
         self.assertEqual(testdata._value, data_values)
 
 
