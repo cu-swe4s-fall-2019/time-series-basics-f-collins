@@ -1,5 +1,6 @@
 import unittest
 from data_import import ImportData
+import data_import
 import datetime
 import csv
 import random
@@ -19,7 +20,7 @@ class TestImportData(unittest.TestCase):
                 data_writer.writerow([idatestr, randval])
                 data_times.append(idatestr)
                 data_values.append(randval)
-                idate = idate + datetime.timedelta(hours=1)
+                idate = idate + datetime.timedelta(minutes = 2)
             test_data.close()
         
         testdata = ImportData("test_file.csv")
@@ -43,13 +44,14 @@ class TestImportData(unittest.TestCase):
                 data_writer.writerow([idatestr, randval])
                 data_times.append(idatestr)
                 data_values.append(randval)
-                idate = idate + datetime.timedelta(hours=1)
+                idate = idate + datetime.timedelta(minutes = 2)
             test_data.close()
         
         testdata = ImportData("test_file.csv")
-        key_time = testdata._time[key_index]
+        data_import.roundTimeArray(testdata, 5)
+        key_time = testdata._roundtime[key_index]
         os.remove("test_file.csv")
-        self.assertEqual(testdata.linear_search_value(key_time), [data_values[key_index]])
+        self.assertIn(int(data_values[key_index]), testdata.linear_search_value(key_time))
 
 if __name__ == "__main__":
         unittest.main()
