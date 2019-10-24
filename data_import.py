@@ -93,8 +93,40 @@ def roundTimeArray(obj, res):
 
 
 def printArray(data_list, annotation_list, base_name, key_file):
-    pass
     # combine and print on the key_file
+    key_index = -1
+    for index in range(len(annotation_list)):
+        if annotation_list[index] == key_file:
+            key_index = index
+            break
+
+    if key_index == -1:
+        raise(ValueError("keyfile not in file list."))
+
+    with open(base_name + ".csv", mode="wt") as outfile:
+        csvfile = csv.writer(outfile, delimiter=",")
+        header = []
+        header.append("time")
+        header.append(base_name)
+        for name in annotation_list:
+            if name != base_name:
+                header.append(name)
+        csvfile.write(header)
+
+        for entry in data_list[key_index]:
+            currentrow = [entry[0], entry[1]]
+            for zipdata in data_list:
+                if zipdata == data_list[key_index]:
+                    continue
+                timefound = 0
+                for pair in zipdata:
+                    if pair[0] == entry[0]:
+                        currentrow.append(pair[1])
+                        timefound = 1
+                if timefound == 0:
+                    currentrow.append(0)
+            csvfile.write(currentrow)
+
 
 if __name__ == '__main__':
 
