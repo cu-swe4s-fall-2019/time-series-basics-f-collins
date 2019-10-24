@@ -6,12 +6,13 @@ import csv
 import random
 import os
 
+
 class TestImportData(unittest.TestCase):
     def test_DataImport_readfile(self):
         data_times = []
         data_values = []
         with open("test_file.csv", mode="w") as test_data:
-            data_writer = csv.writer(test_data, delimiter = ",")
+            data_writer = csv.writer(test_data, delimiter=",")
             data_writer.writerow(["time", "value"])
             idate = datetime.datetime.now()
             for item in range(9):
@@ -20,9 +21,9 @@ class TestImportData(unittest.TestCase):
                 data_writer.writerow([idatestr, randval])
                 data_times.append(idatestr)
                 data_values.append(randval)
-                idate = idate + datetime.timedelta(minutes = 2)
+                idate = idate + datetime.timedelta(minutes=2)
             test_data.close()
-        
+
         testdata = ImportData("test_file.csv")
         os.remove("test_file.csv")
         str_times = [val.strftime("%m/%d/%Y %H:%M") for val in testdata._time]
@@ -32,10 +33,10 @@ class TestImportData(unittest.TestCase):
     def test_DataImport_linear_search_value(self):
         data_times = []
         data_values = []
-        key_index = random.randint(0,9)
+        key_index = random.randint(0, 9)
         key_time = None
         with open("test_file.csv", mode="w") as test_data:
-            data_writer = csv.writer(test_data, delimiter = ",")
+            data_writer = csv.writer(test_data, delimiter=",")
             data_writer.writerow(["time", "value"])
             idate = datetime.datetime.now()
             for item in range(9):
@@ -44,14 +45,16 @@ class TestImportData(unittest.TestCase):
                 data_writer.writerow([idatestr, randval])
                 data_times.append(idatestr)
                 data_values.append(randval)
-                idate = idate + datetime.timedelta(minutes = 2)
+                idate = idate + datetime.timedelta(minutes=2)
             test_data.close()
-        
+
         testdata = ImportData("test_file.csv")
         data_import.roundTimeArray(testdata, 5)
         key_time = testdata._roundtime[key_index]
         os.remove("test_file.csv")
-        self.assertIn(int(data_values[key_index]), testdata.linear_search_value(key_time))
+        self.assertIn(int(data_values[key_index]),
+                      testdata.linear_search_value(key_time))
+
 
 if __name__ == "__main__":
-        unittest.main()
+    unittest.main()
